@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+#  rabbitmq-server:
+#    image: rabbitmq:3-management-alpine
+#    container_name: 'rabbitmq-server'
+#    ports:
+#      - 5672:5672
+#      - 15672:15672
+#    volumes:
+#      - .docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+#      - .docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
+  user-service:
+    container_name: user-service
+    build:
+      target: development
+      context: ./user-service
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - ./user-service:/usr/user-service
+    command: npm run start:debug
+    ports:
+      - "4000:4000"
+
+  file-service:
+    container_name: file-service
+    build:
+      target: development
+      context: ./file-service
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - ./file-service:/usr/file-service
+    command: npm run start:debug
+    ports:
+      - "4001:4001"
