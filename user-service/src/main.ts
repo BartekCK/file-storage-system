@@ -20,7 +20,7 @@ async function bootstrap() {
     },
   });
 
-  await microservice.listenAsync();
+  await microservice.listen();
   await app.listen(configService.getAppConfig().APP_PORT);
 }
 bootstrap();

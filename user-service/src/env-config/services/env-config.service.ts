@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigEnvModel } from '../models/config-env.model';
 import { ConfigService } from '@nestjs/config';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 @Injectable()
 export class EnvConfigService extends ConfigService {
@@ -23,5 +24,22 @@ export class EnvConfigService extends ConfigService {
 
   public getQueueFileName(): string {
     return this.get('RABBIT_MQ_QUEUE_FILE');
+  }
+
+  public databaseConfig(): TypeOrmModuleOptions {
+    return {
+      name: 'default',
+      type: 'postgres',
+      host: this.get<string>('DB_HOST'),
+      port: this.get<number>('DB_PORT'),
+      username: this.get<string>('DB_USERNAME'),
+      password: this.get<string>('DB_PASSWORD'),
+      database: this.get<string>('DB_DATABASE_NAME'),
+      entities: ['**/*.entity{ .ts,.js}'],
+      migrations: ['**/database/migrations/*.js'],
+      subscribers: ['**/*.subscriber{ .ts,.js }'],
+      synchronize: false,
+      migrationsRun: true,
+    };
   }
 }

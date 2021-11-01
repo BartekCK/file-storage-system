@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, BadRequestException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AuthTokenConst } from '../constants/auth-token.const';
 import { UserCredentialsDto } from '../dto/user-credentials.dto';
@@ -16,6 +16,14 @@ export class AuthService {
   async createUser({ email, password }: UserCredentialsDto): Promise<void> {
     const hashPassword = await hash(password, 10);
 
-    await this.client.send('create-user', new User(email, hashPassword)).toPromise();
+    const res = await this.client.send('create-user', new User(email, hashPassword)).toPromise();
+
+    if (res?.status === 400) {
+      throw new BadRequestException(res.message);
+    }
+
+    /**
+     * Log unknown error
+     */
   }
 }

@@ -5,9 +5,11 @@ import { EnvConfigModule } from '../env-config/env-config.module';
 import { EnvConfigService } from '../env-config/services/env-config.service';
 import { FileTokenConst } from './constants/file-token.const';
 import { UserService } from './services/user.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
 
 @Module({
-  imports: [EnvConfigModule],
+  imports: [TypeOrmModule.forFeature([User]), EnvConfigModule],
   controllers: [UserController],
   providers: [
     {

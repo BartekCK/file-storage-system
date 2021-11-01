@@ -11,6 +11,19 @@ services:
       - ./.rabbitmq/data/:/var/lib/rabbitmq/
       - ./.rabbitmq/log/:/var/log/rabbitmq
 
+  postgres:
+    container_name: postgres
+    image: postgres:13
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_DATABASE_NAME}
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+      - ./.pgdata:/var/lib/postgresql/data
+      - ./user-service/.db/create-database.sql:/docker-entrypoint-initdb.d/create-database.sql
+
   user-service:
     container_name: user-service
     build:
@@ -24,6 +37,7 @@ services:
       - "4000:4000"
     depends_on:
       - rabbitmq-server
+      - postgres
 
   file-service:
     container_name: file-service
