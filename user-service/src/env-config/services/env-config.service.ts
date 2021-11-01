@@ -10,4 +10,18 @@ export class EnvConfigService extends ConfigService {
       APP_HOST: this.get('APP_HOST'),
     };
   }
+
+  public getRabbitMqConfig(): Pick<ConfigEnvModel, 'RABBIT_MQ_URL'> {
+    return {
+      RABBIT_MQ_URL: this.get('RABBIT_MQ_URL'),
+    };
+  }
+
+  public getQueueAuthName(): string {
+    return this.get('RABBIT_MQ_QUEUE_AUTH');
+  }
+
+  public getQueueFileName(): string {
+    return this.get('RABBIT_MQ_QUEUE_FILE');
+  }
 }

@@ -12,4 +12,10 @@ export class ConfigEnvModel {
 
   @IsString()
   APP_HOST: string;
+
+  @IsString()
+  RABBIT_MQ_URL: string;
+
+  @IsString()
+  RABBIT_MQ_QUEUE_FILE: string;
 }
