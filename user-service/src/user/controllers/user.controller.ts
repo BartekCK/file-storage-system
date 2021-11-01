@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
+import { User } from '../entities/user.entity';
 
 @Controller('/users')
 export class UserController {
@@ -14,11 +15,11 @@ export class UserController {
   }
 
   @MessagePattern('create-user')
-  async addSubscriber(@Payload() message: string, @Ctx() context: RmqContext) {
+  async addSubscriber(@Payload() user: User, @Ctx() context: RmqContext) {
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
-    channel.ack(originalMsg);
 
+    channel.ack(originalMsg);
     return 'USER FILE URL';
   }
 }
