@@ -32,4 +32,8 @@ export class UserService {
   public async isEmailDuplicated(email: string): Promise<boolean> {
     return Boolean(await this.userRepository.findOne({ where: { email } }));
   }
+
+  async findUserByEmail(email: string): Promise<User | undefined> {
+    return this.userRepository.findOne({ where: { email } });
+  }
 }

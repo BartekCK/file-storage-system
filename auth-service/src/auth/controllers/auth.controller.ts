@@ -1,16 +1,23 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { UserCredentialsDto } from '../dto/user-credentials.dto';
+import { LocalAuthGuard } from '../guards/local-auth.guard';
+import { UserRequest } from '../interfaces/user-req.interface';
+import { ReadAccessTokenDto } from '../dto/read-access-token.dto';
 
 @Controller('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/')
-  public async getAllUsers(@Body() createUserDto: UserCredentialsDto): Promise<void> {
+  public async createUser(@Body() createUserDto: UserCredentialsDto): Promise<void> {
     await this.authService.createUser(createUserDto);
   }
 
-  @Get('/')
-  public async login(@Body() userCredentialsDto: UserCredentialsDto) {}
+  @Post('/login')
+  @UseGuards(LocalAuthGuard)
+  public async login(@Req() req: UserRequest): Promise<ReadAccessTokenDto> {
+    const token = this.authService.getAccessToken(req.user);
+    return ReadAccessTokenDto.toDto(token);
+  }
 }

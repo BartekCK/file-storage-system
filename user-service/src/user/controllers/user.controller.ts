@@ -15,7 +15,7 @@ export class UserController {
   }
 
   @MessagePattern('create-user')
-  async addSubscriber(@Payload() user: User, @Ctx() context: RmqContext): Promise<any> {
+  async createUser(@Payload() user: User, @Ctx() context: RmqContext): Promise<any> {
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
 
@@ -26,5 +26,16 @@ export class UserController {
 
     await this.userService.saveUser(user);
     channel.ack(originalMsg);
+  }
+
+  @MessagePattern('find-user')
+  async findUser(@Payload() email: string, @Ctx() context: RmqContext): Promise<User> {
+    const channel = context.getChannelRef();
+    const originalMsg = context.getMessage();
+
+    const user = await this.userService.findUserByEmail(email);
+    channel.ack(originalMsg);
+
+    return user;
   }
 }
