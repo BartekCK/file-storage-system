@@ -21,6 +21,10 @@ export class EnvConfigService extends ConfigService {
     return this.get('RABBIT_MQ_QUEUE_AUTH');
   }
 
+  public getQueueUserName(): string {
+    return this.get('RABBIT_MQ_QUEUE_USER');
+  }
+
   public getAuthSecretKey(): string {
     return this.get('AUTH_SECRET_KEY');
   }

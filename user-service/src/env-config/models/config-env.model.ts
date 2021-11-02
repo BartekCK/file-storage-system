@@ -21,4 +21,7 @@ export class ConfigEnvModel {
 
   @IsString()
   RABBIT_MQ_QUEUE_FILE: string;
+
+  @IsString()
+  RABBIT_MQ_QUEUE_USER: string;
 }

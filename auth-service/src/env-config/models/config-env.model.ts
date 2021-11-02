@@ -20,5 +20,8 @@ export class ConfigEnvModel {
   RABBIT_MQ_QUEUE_AUTH: string;
 
   @IsString()
+  RABBIT_MQ_QUEUE_USER: string;
+
+  @IsString()
   AUTH_SECRET_KEY: string;
 }

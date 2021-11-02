@@ -26,6 +26,10 @@ export class EnvConfigService extends ConfigService {
     return this.get('RABBIT_MQ_QUEUE_FILE');
   }
 
+  public getQueueUserName(): string {
+    return this.get('RABBIT_MQ_QUEUE_USER');
+  }
+
   public databaseConfig(): TypeOrmModuleOptions {
     return {
       name: 'default',

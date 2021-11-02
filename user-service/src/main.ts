@@ -12,7 +12,7 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: [configService.getRabbitMqConfig().RABBIT_MQ_URL],
-      queue: configService.getQueueAuthName(),
+      queue: configService.getQueueUserName(),
       noAck: false,
       queueOptions: {
         durable: true,

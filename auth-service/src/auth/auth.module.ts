@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './controllers/auth.controller';
-import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { EnvConfigModule } from '../env-config/env-config.module';
 import { EnvConfigService } from '../env-config/services/env-config.service';
-import { AuthTokenConst } from './constants/auth-token.const';
 import { AuthService } from './services/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
+import { AuthMessageController } from './controllers/auth-message.controller';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
+    UserModule,
     EnvConfigModule,
     PassportModule,
     JwtModule.registerAsync({
@@ -22,27 +23,7 @@ import { LocalStrategy } from './strategies/local.strategy';
       }),
     }),
   ],
-  controllers: [AuthController],
-  providers: [
-    {
-      provide: AuthTokenConst,
-      useFactory: (configService: EnvConfigService) => {
-        return ClientProxyFactory.create({
-          transport: Transport.RMQ,
-          options: {
-            urls: [configService.getRabbitMqConfig().RABBIT_MQ_URL],
-            queue: configService.getQueueAuthName(),
-            noAck: false,
-            queueOptions: {
-              durable: true,
-            },
-          },
-        });
-      },
-      inject: [EnvConfigService],
-    },
-    AuthService,
-    LocalStrategy,
-  ],
+  controllers: [AuthController, AuthMessageController],
+  providers: [AuthService, LocalStrategy],
 })
 export class AuthModule {}

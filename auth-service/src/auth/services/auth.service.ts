@@ -1,14 +1,19 @@
-import { Inject, Injectable, BadRequestException } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { AuthTokenConst } from '../constants/auth-token.const';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { UserCredentialsDto } from '../dto/user-credentials.dto';
 import { User, UserAuth } from '../models/user.model';
 import { compare, hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import { EnvConfigService } from '../../env-config/services/env-config.service';
+import { UserProxy } from '../../user/services/user.proxy';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class AuthService {
-  constructor(@Inject(AuthTokenConst) private client: ClientProxy, private jwtService: JwtService) {}
+  constructor(
+    private readonly client: UserProxy,
+    private readonly jwtService: JwtService,
+    private readonly envConfigService: EnvConfigService,
+  ) {}
 
   async onApplicationBootstrap() {
     await this.client.connect();
@@ -42,5 +47,15 @@ export class AuthService {
   public getAccessToken(user: UserAuth): string {
     const payload = { email: user.email, sub: user.id };
     return this.jwtService.sign(payload);
+  }
+
+  async verifyToken(token: string): Promise<UserAuth> {
+    try {
+      const result = this.jwtService.verify(token, { secret: this.envConfigService.getAuthSecretKey() });
+      console.log(result);
+      return result;
+    } catch (e) {
+      // return throwError(e);
+    }
   }
 }
