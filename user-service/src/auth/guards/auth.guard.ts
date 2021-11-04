@@ -1,13 +1,16 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthProxyService } from '../services/auth-proxy.service';
+import { lastValueFrom } from 'rxjs';
+import { UserAuth } from '../../user/types/user-auth.type';
+import { UserRequest } from '../interfaces/user-req.interface';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private readonly authProxyService: AuthProxyService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest<Request>();
+    const req: UserRequest = <UserRequest>context.switchToHttp().getRequest<Request>();
 
     const token = req.headers.authorization?.substring(7, req.headers.authorization?.length) || null;
 
@@ -15,8 +18,12 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('Authorization bearer token is required is headers');
     }
 
-    const result = await this.authProxyService.send('token-verify', token).toPromise();
-    console.log(result);
-    return true;
+    try {
+      const result: UserAuth = await lastValueFrom(this.authProxyService.send('token-verify', token));
+      req.user = result;
+      return true;
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
   }
 }

@@ -1,15 +1,15 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { AuthGuard } from '../../auth/guards/auth.guard';
-import { Request } from 'express';
+import { UserRequest } from '../../auth/interfaces/user-req.interface';
+import { Authorized } from '../../auth/decorators/authorized.decorator';
 
 @Controller('/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('/')
-  @UseGuards(AuthGuard)
-  public async getLoggedUserInf(@Req() req: Request): Promise<any> {
-    return 'ala ma kota';
+  @Authorized()
+  public async getLoggedUserInf(@Req() req: UserRequest): Promise<any> {
+    return req.user;
   }
 }

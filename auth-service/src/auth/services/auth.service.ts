@@ -5,7 +5,7 @@ import { compare, hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { EnvConfigService } from '../../env-config/services/env-config.service';
 import { UserProxy } from '../../user/services/user.proxy';
-import { throwError } from 'rxjs';
+import { Observable, map, defer } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -49,13 +49,8 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
-  async verifyToken(token: string): Promise<UserAuth> {
-    try {
-      const result = this.jwtService.verify(token, { secret: this.envConfigService.getAuthSecretKey() });
-      console.log(result);
-      return result;
-    } catch (e) {
-      // return throwError(e);
-    }
-  }
+  public verifyToken = (token: string): Observable<UserAuth> =>
+    defer(() => this.jwtService.verifyAsync(token, { secret: this.envConfigService.getAuthSecretKey() })).pipe(
+      map((obj: any) => ({ id: obj.sub, email: obj.email })),
+    );
 }
