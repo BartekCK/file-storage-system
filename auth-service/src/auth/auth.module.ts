@@ -8,9 +8,11 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AuthMessageController } from './controllers/auth-message.controller';
 import { UserModule } from '../user/user.module';
+import { LoggerModule } from '../logger/logger.module';
 
 @Module({
   imports: [
+    LoggerModule,
     UserModule,
     EnvConfigModule,
     PassportModule,

@@ -1,6 +1,6 @@
 import { Controller, Get, Req } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { UserRequest } from '../../auth/interfaces/user-req.interface';
+import { UserRequest } from '../../common/interfaces/user-req.interface';
 import { Authorized } from '../../auth/decorators/authorized.decorator';
 
 @Controller('/users')

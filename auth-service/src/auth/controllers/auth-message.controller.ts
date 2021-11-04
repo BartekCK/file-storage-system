@@ -1,24 +1,25 @@
 import { Controller, UseFilters } from '@nestjs/common';
-import { Ctx, MessagePattern, Payload, RmqContext, Transport } from '@nestjs/microservices';
+import { Ctx, Payload, RmqContext } from '@nestjs/microservices';
 import { AuthService } from '../services/auth.service';
-import { UserAuth } from '../models/user.model';
 import { Observable } from 'rxjs';
-import { RpcPatternFilter } from '../filters/rpc-pattern.filter';
+import { RpcPatternFilter } from '../../common/filters/rpc-pattern.filter';
+import { LoggerService } from '../../logger/services/logger.service';
+import { UserAuth } from '../../common/types/user-auth.type';
+import { MsgPatternLog } from '../../logger/decorators/msg-pattern-log.decorator';
 
 @Controller()
 @UseFilters(RpcPatternFilter)
 export class AuthMessageController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService, private readonly loggerService: LoggerService) {
+    this.loggerService.setContext(AuthMessageController.name);
+  }
 
-  @MessagePattern('token-verify', Transport.RMQ)
+  @MsgPatternLog('token-verify')
   findUser(@Payload() token: string, @Ctx() context: RmqContext): Observable<UserAuth> {
-    console.log('AuthService get message from "token-verify"');
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
 
-    const observable = this.authService.verifyToken(token);
     channel.ack(originalMsg);
-
-    return observable;
+    return this.authService.verifyToken(token);
   }
 }

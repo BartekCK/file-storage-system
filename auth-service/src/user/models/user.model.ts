@@ -8,5 +8,3 @@ export class User {
     this.password = password;
   }
 }
-
-export type UserAuth = Omit<User, 'password'>;

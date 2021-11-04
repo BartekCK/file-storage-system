@@ -1,35 +1,41 @@
-import { BadRequestException, Controller } from '@nestjs/common';
+import { Controller, UseFilters } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
+import { Ctx, Payload, RmqContext, RpcException } from '@nestjs/microservices';
 import { User } from '../entities/user.entity';
+import { LoggerService } from '../../logger/services/logger.service';
+import { defer, map, Observable, switchMap } from 'rxjs';
+import { MsgPatternLog } from '../../logger/decorators/msg-pattern-log.decorator';
+import { RpcPatternFilter } from '../../common/filters/rpc-pattern.filter';
 
 @Controller()
+@UseFilters(RpcPatternFilter)
 export class UserMessageController {
-  constructor(private readonly userService: UserService) {}
-
-  @MessagePattern('create-user')
-  async createUser(@Payload() user: User, @Ctx() context: RmqContext): Promise<any> {
-    const channel = context.getChannelRef();
-    const originalMsg = context.getMessage();
-
-    const isDuplicated = await this.userService.isEmailDuplicated(user.email);
-    if (isDuplicated) {
-      return new BadRequestException(`User with email '${user.email}' already exist`);
-    }
-
-    await this.userService.saveUser(user);
-    channel.ack(originalMsg);
+  constructor(private readonly userService: UserService, private readonly loggerService: LoggerService) {
+    this.loggerService.setContext(UserMessageController.name);
   }
 
-  @MessagePattern('find-user')
-  async findUser(@Payload() email: string, @Ctx() context: RmqContext): Promise<User> {
-    console.log('UserService get message from "find-user"');
+  @MsgPatternLog('create-user')
+  createUser(@Payload() user: User, @Ctx() context: RmqContext): Observable<User> {
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
 
-    const user = await this.userService.findUserByEmail(email);
     channel.ack(originalMsg);
+    return defer(() => this.userService.isEmailDuplicated(user.email)).pipe(
+      map((val) => {
+        if (val) {
+          throw new RpcException(`User with email '${user.email}' already exist`);
+        }
+      }),
+      switchMap(() => defer(() => this.userService.saveUser(user))),
+    );
+  }
 
-    return user;
+  @MsgPatternLog('find-user')
+  findUser(@Payload() email: string, @Ctx() context: RmqContext): Observable<User> {
+    const channel = context.getChannelRef();
+    const originalMsg = context.getMessage();
+
+    channel.ack(originalMsg);
+    return defer(() => this.userService.findUserByEmail(email));
   }
 }

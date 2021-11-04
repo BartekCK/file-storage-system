@@ -2,8 +2,8 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { Request } from 'express';
 import { AuthProxyService } from '../services/auth-proxy.service';
 import { lastValueFrom } from 'rxjs';
-import { UserAuth } from '../../user/types/user-auth.type';
-import { UserRequest } from '../interfaces/user-req.interface';
+import { UserAuth } from '../../common/types/user-auth.type';
+import { UserRequest } from '../../common/interfaces/user-req.interface';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

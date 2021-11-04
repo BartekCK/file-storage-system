@@ -2,7 +2,7 @@ import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { UserCredentialsDto } from '../dto/user-credentials.dto';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
-import { UserRequest } from '../interfaces/user-req.interface';
+import { UserRequest } from '../../common/interfaces/user-req.interface';
 import { ReadAccessTokenDto } from '../dto/read-access-token.dto';
 
 @Controller('/auth')
