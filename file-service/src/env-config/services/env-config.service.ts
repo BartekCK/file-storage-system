@@ -20,4 +20,8 @@ export class EnvConfigService extends ConfigService {
   public getQueueFileName(): string {
     return this.get('RABBIT_MQ_QUEUE_FILE');
   }
+
+  public getQueueFileProcessName(): string {
+    return this.get('RABBIT_MQ_QUEUE_FILE_PROCESS');
+  }
 }

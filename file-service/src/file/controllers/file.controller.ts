@@ -1,10 +1,14 @@
-import { Controller } from '@nestjs/common';
-import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
+import { Controller, Get } from '@nestjs/common';
+import { FileProcessProxyService } from '../../file-process/services/file-process-proxy.service';
 
-@Controller()
+@Controller('/')
 export class FileController {
-  @MessagePattern('get-user-file')
-  async addSubscriber(@Payload() subscriber: string, @Ctx() context: RmqContext) {
-    return 'USER FILE URL';
+  constructor(private readonly fileProcessProxyService: FileProcessProxyService) {}
+
+  @Get()
+  public async getMethod() {
+    this.fileProcessProxyService.emit('TO-PATTEN', { name: 'Artur' });
+    console.log('Message was sent');
+    return 'Hello from file controller';
   }
 }
