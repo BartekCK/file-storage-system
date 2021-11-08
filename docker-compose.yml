@@ -32,6 +32,7 @@ services:
       dockerfile: ./docker/Dockerfile
     volumes:
       - ./user-service:/usr/user-service
+      - ./files:/usr/files
     command: npm run start:debug
     ports:
       - "4000:4000"
@@ -47,6 +48,7 @@ services:
       dockerfile: ./docker/Dockerfile
     volumes:
       - ./file-service:/usr/file-service
+      - ./files:/usr/files
     command: npm run start:debug
     ports:
       - "4001:4001"
@@ -75,11 +77,8 @@ services:
     command: sh -c '/bin/wait-for-it.sh rabbitmq-server:5672 --timeout=60 -- python3 -u main.py'
     volumes:
       - ./file-processor:/usr/file-processor
+      - ./files:/usr/files
     ports:
       - "4003:4003"
-#    environment:
-#      - PORT=3002
-#      - RABBIT_HOST=rabbitmq-server
-#      - QUEUE_NAME=kotki
     depends_on:
       - rabbitmq-server
