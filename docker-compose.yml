@@ -66,3 +66,20 @@ services:
       - "4002:4002"
     depends_on:
       - rabbitmq-server
+
+  consumer-python:
+    container_name: file-processor
+    build:
+      context: ./file-processor
+      dockerfile: ./docker/Dockerfile
+    command: sh -c '/bin/wait-for-it.sh rabbitmq-server:5672 --timeout=60 -- python3 -u main.py'
+    volumes:
+      - ./file-processor:/usr/file-processor
+    ports:
+      - "4003:4003"
+#    environment:
+#      - PORT=3002
+#      - RABBIT_HOST=rabbitmq-server
+#      - QUEUE_NAME=kotki
+    depends_on:
+      - rabbitmq-server

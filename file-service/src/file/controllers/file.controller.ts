@@ -7,8 +7,9 @@ export class FileController {
 
   @Get()
   public async getMethod() {
-    this.fileProcessProxyService.emit('TO-PATTEN', { name: 'Artur' });
-    console.log('Message was sent');
+    console.log('Save new file in system');
+    console.log('Emit message to process file');
+    this.fileProcessProxyService.emit('process-file', 'fileLocation');
     return 'Hello from file controller';
   }
 }
