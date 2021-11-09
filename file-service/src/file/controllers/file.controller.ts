@@ -1,15 +1,20 @@
-import { Controller, Get } from '@nestjs/common';
-import { FileProcessProxyService } from '../../file-process/services/file-process-proxy.service';
+import { Controller, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { ReadFileDto } from '../dto/read-file.dto';
+import { Authorized } from '../../auth/decorators/authorized.decorator';
+import { UserRequest } from '../../common/interfaces/user-req.interface';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileService } from '../services/file.service';
 
-@Controller('/')
+@Controller('/files')
 export class FileController {
-  constructor(private readonly fileProcessProxyService: FileProcessProxyService) {}
+  constructor(private readonly fileService: FileService) {}
 
-  @Get()
-  public async getMethod() {
-    console.log('Save new file in system');
-    console.log('Emit message to process file');
-    this.fileProcessProxyService.emit('process-file', 'fileLocation');
-    return 'Hello from file controller';
+  @Post()
+  @Authorized()
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadUserFile(@Req() req: UserRequest, @UploadedFile() file: Express.Multer.File): Promise<ReadFileDto> {
+    const fileDocument = await this.fileService.saveFile(req.user, file);
+
+    return ReadFileDto.createFromDoc(fileDocument);
   }
 }

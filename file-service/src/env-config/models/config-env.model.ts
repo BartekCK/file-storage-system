@@ -21,4 +21,7 @@ export class ConfigEnvModel {
 
   @IsString()
   RABBIT_MQ_QUEUE_FILE_PROCESS: string;
+
+  @IsString()
+  MONGO_DB_URI: string;
 }

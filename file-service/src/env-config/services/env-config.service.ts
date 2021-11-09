@@ -24,4 +24,16 @@ export class EnvConfigService extends ConfigService {
   public getQueueFileProcessName(): string {
     return this.get('RABBIT_MQ_QUEUE_FILE_PROCESS');
   }
+
+  public getMongoConfig(): string {
+    return this.get('MONGO_DB_URI');
+  }
+
+  public getQueueUserName(): string {
+    return this.get('RABBIT_MQ_QUEUE_USER');
+  }
+
+  public getQueueAuthName(): string {
+    return this.get('RABBIT_MQ_QUEUE_AUTH');
+  }
 }

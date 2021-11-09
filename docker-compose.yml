@@ -24,6 +24,15 @@ services:
       - ./.pgdata:/var/lib/postgresql/data
       - ./user-service/.db/create-database.sql:/docker-entrypoint-initdb.d/create-database.sql
 
+  mongo:
+    image: mongo:4.4.4
+    container_name: mongo
+    ports:
+      - ${MONGO_DB_PORT}:${MONGO_DB_PORT}
+    volumes:
+      - ./db:/data/db
+
+
   user-service:
     container_name: user-service
     build:
@@ -54,6 +63,7 @@ services:
       - "4001:4001"
     depends_on:
       - rabbitmq-server
+      - mongo
 
   auth-service:
     container_name: auth-service
