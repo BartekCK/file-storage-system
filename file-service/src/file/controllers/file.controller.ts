@@ -9,7 +9,7 @@ import { FileService } from '../services/file.service';
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
-  @Post()
+  @Post('/')
   @Authorized()
   @UseInterceptors(FileInterceptor('file'))
   async uploadUserFile(@Req() req: UserRequest, @UploadedFile() file: Express.Multer.File): Promise<ReadFileDto> {
