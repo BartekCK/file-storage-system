@@ -13,8 +13,10 @@ export class FileController {
   @Authorized()
   @UseInterceptors(FileInterceptor('file'))
   async uploadUserFile(@Req() req: UserRequest, @UploadedFile() file: Express.Multer.File): Promise<ReadFileDto> {
-    const fileDocument = await this.fileService.saveFile(req.user, file);
+    const { user } = req;
+    const fileDocument = await this.fileService.saveFile(user, file);
+    const fileUrl = this.fileService.createUrl(fileDocument, user);
 
-    return ReadFileDto.createFromDoc(fileDocument);
+    return ReadFileDto.createFromDoc(fileDocument, fileUrl);
   }
 }

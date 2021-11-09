@@ -7,9 +7,11 @@ import { File, FileSchema } from './schemas/file.schema';
 import { AuthModule } from '../auth/auth.module';
 import { FileService } from './services/file.service';
 import { LoggerModule } from '../logger/logger.module';
+import { EnvConfigModule } from '../env-config/env-config.module';
 
 @Module({
   imports: [
+    EnvConfigModule,
     LoggerModule,
     AuthModule,
     FileProcessModule,

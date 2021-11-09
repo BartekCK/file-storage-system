@@ -4,10 +4,10 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EnvConfigService extends ConfigService {
-  public getAppConfig(): Pick<ConfigEnvModel, 'APP_PORT' | 'APP_HOST'> {
+  public getAppConfig(): Pick<ConfigEnvModel, 'APP_PORT' | 'APP_URL'> {
     return {
       APP_PORT: this.get('APP_PORT'),
-      APP_HOST: this.get('APP_HOST'),
+      APP_URL: this.get('APP_URL'),
     };
   }
 

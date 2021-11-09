@@ -9,7 +9,7 @@ export class ReadFileDto {
   isProcessed?: Date;
   url?: string;
 
-  static createFromDoc(file: FileDocument): ReadFileDto {
+  static createFromDoc(file: FileDocument, fileUrl?: string): ReadFileDto {
     const dto = new ReadFileDto();
 
     dto.id = file.id;
@@ -18,7 +18,7 @@ export class ReadFileDto {
     dto.size = file.size;
     dto.isProcessed = file.isProcessed;
     dto.fileName = file.fileName;
-    dto.url = ''; //TODO: specyfied URL
+    dto.url = fileUrl;
 
     return dto;
   }

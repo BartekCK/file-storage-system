@@ -7,11 +7,13 @@ import { FileProcessProxyService } from '../../file-process/services/file-proces
 import { uuid } from 'uuidv4';
 import { createWriteStream } from 'fs';
 import { LoggerService } from '../../logger/services/logger.service';
+import { EnvConfigService } from '../../env-config/services/env-config.service';
 @Injectable()
 export class FileService {
   constructor(
     private readonly fileProcessProxyService: FileProcessProxyService,
     private readonly loggerService: LoggerService,
+    private readonly envConfigService: EnvConfigService,
     @InjectModel(File.name) private fileModel: Model<FileDocument>,
   ) {}
 
@@ -35,5 +37,19 @@ export class FileService {
     this.fileProcessProxyService.emit('process-file', `unprocessed/${key}`);
 
     return fileDoc.save();
+  }
+
+  public createUrl(fileDoc: FileDocument, user?: User): string | undefined {
+    const url = this.envConfigService.getAppConfig().APP_URL;
+
+    if (fileDoc.isProcessed) {
+      return `${url}/files/for-share/${fileDoc.key}`;
+    }
+
+    if (!user) {
+      return undefined;
+    }
+
+    return `${url}/files/unprocessed/${fileDoc.key}`;
   }
 }

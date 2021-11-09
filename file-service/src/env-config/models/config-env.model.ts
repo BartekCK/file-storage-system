@@ -11,7 +11,7 @@ export class ConfigEnvModel {
   APP_PORT: number;
 
   @IsString()
-  APP_HOST: string;
+  APP_URL: string;
 
   @IsString()
   RABBIT_MQ_URL: string;
