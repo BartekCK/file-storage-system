@@ -26,7 +26,8 @@ export class FileService {
     const key = `${uuid()}.${extension}`;
 
     const ws = createWriteStream(`../files/unprocessed/${key}`);
-    ws.write(file.buffer);
+    await this.writeToDisc(ws, file.buffer);
+    ws.close();
 
     const fileDoc = new this.fileModel({
       userId: user.id,
@@ -36,9 +37,10 @@ export class FileService {
       isProcessed: null,
     });
 
-    this.fileProcessProxyService.emit('process-file', `unprocessed/${key}`);
+    const savedFileDoc = await fileDoc.save();
+    await this.fileProcessProxyService.emit('process-file', `${key}`);
 
-    return fileDoc.save();
+    return savedFileDoc;
   }
 
   public async createUrl(fileDoc: FileDocument, user?: User): Promise<string | undefined> {
@@ -56,5 +58,20 @@ export class FileService {
     await this.redisService.set(token, fileDoc.key);
 
     return `${url}/files/unprocessed/${token}/${fileDoc.key}`;
+  }
+
+  public getFileByKey(key: string): Promise<FileDocument> {
+    return this.fileModel.findOne({ key }).exec();
+  }
+
+  public async markAsProcessed(fileDoc: FileDocument): Promise<FileDocument> {
+    fileDoc.isProcessed = new Date();
+    return fileDoc.save();
+  }
+
+  private async writeToDisc(ws, buffer: Buffer): Promise<void> {
+    return new Promise((resolve) => {
+      ws.write(buffer, resolve);
+    });
   }
 }

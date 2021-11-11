@@ -6,7 +6,7 @@ class QueueConnection():
 
     def __init__(self, queueName, host='localhost'):
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host))
+            pika.ConnectionParameters(host, heartbeat=2))
         self.channel = self.connection.channel()
         self.queueName = queueName
         self.channel.queue_declare(queue=queueName, durable=True)
