@@ -1,7 +1,8 @@
 import { Controller } from '@nestjs/common';
-import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
+import { Ctx, Payload, RmqContext } from '@nestjs/microservices';
 import { FileProcessProxyService } from '../../file-process/services/file-process-proxy.service';
 import { FileService } from '../services/file.service';
+import { MsgPatternLog } from '../../logger/decorators/msg-pattern-log.decorator';
 
 @Controller()
 export class FileMessageController {
@@ -10,7 +11,7 @@ export class FileMessageController {
     private readonly fileService: FileService,
   ) {}
 
-  @MessagePattern('file-processed')
+  @MsgPatternLog('file-processed')
   async deleteFile(@Payload() key: string, @Ctx() context: RmqContext) {
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
