@@ -16,7 +16,7 @@ export class RedisService {
     await this.client.set(key, value, { EX: this.expirationTime, NX: true });
   }
 
-  public async get(key: string) {
-    await this.client.get(key);
+  public async get(key: string): Promise<string> {
+    return await this.client.get(key);
   }
 }

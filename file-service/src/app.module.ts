@@ -6,9 +6,11 @@ import { EnvConfigService } from './env-config/services/env-config.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthFileMiddleware } from './auth/middlewares/auth-file.middleware';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
+    RedisModule,
     FileModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '../files/for-share'),

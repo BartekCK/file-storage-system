@@ -41,7 +41,7 @@ export class FileService {
     return fileDoc.save();
   }
 
-  public createUrl(fileDoc: FileDocument, user?: User): string | undefined {
+  public async createUrl(fileDoc: FileDocument, user?: User): Promise<string | undefined> {
     const url = this.envConfigService.getAppConfig().APP_URL;
 
     if (fileDoc.isProcessed) {
@@ -52,6 +52,9 @@ export class FileService {
       return undefined;
     }
 
-    return `${url}/files/unprocessed/${fileDoc.key}`;
+    const token = uuid();
+    await this.redisService.set(token, fileDoc.key);
+
+    return `${url}/files/unprocessed/${token}/${fileDoc.key}`;
   }
 }
