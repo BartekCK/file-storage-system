@@ -11,6 +11,14 @@ export class EnvConfigService extends ConfigService {
     };
   }
 
+  public getRedisConfig(): Pick<ConfigEnvModel, 'REDIS_PORT' | 'REDIS_HOST' | 'REDIS_EX'> {
+    return {
+      REDIS_PORT: this.get('REDIS_PORT'),
+      REDIS_HOST: this.get('REDIS_HOST'),
+      REDIS_EX: this.get('REDIS_EX'),
+    };
+  }
+
   public getRabbitMqConfig(): Pick<ConfigEnvModel, 'RABBIT_MQ_URL'> {
     return {
       RABBIT_MQ_URL: this.get('RABBIT_MQ_URL'),

@@ -8,12 +8,14 @@ import { uuid } from 'uuidv4';
 import { createWriteStream } from 'fs';
 import { LoggerService } from '../../logger/services/logger.service';
 import { EnvConfigService } from '../../env-config/services/env-config.service';
+import { RedisService } from '../../redis/services/redis.service';
 @Injectable()
 export class FileService {
   constructor(
     private readonly fileProcessProxyService: FileProcessProxyService,
     private readonly loggerService: LoggerService,
     private readonly envConfigService: EnvConfigService,
+    private readonly redisService: RedisService,
     @InjectModel(File.name) private fileModel: Model<FileDocument>,
   ) {}
 

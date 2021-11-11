@@ -32,6 +32,11 @@ services:
     volumes:
       - ./db:/data/db
 
+  redis-memory:
+    image: redis:6.2.1
+    container_name: redis
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
 
   user-service:
     container_name: user-service

@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsString } from 'class-validator';
+import { IsEnum, IsInt, IsNumber, IsString } from 'class-validator';
 import { EnvTypeEnum } from '../types/env-type.enum';
 
 export class ConfigEnvModel {
@@ -24,4 +24,15 @@ export class ConfigEnvModel {
 
   @IsString()
   MONGO_DB_URI: string;
+
+  @IsInt()
+  @Type(() => Number)
+  REDIS_PORT: number;
+
+  @IsString()
+  REDIS_HOST: string;
+
+  @IsInt()
+  @Type(() => Number)
+  REDIS_EX: number;
 }
