@@ -1,4 +1,4 @@
-import { Controller, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ReadFileDto } from '../dto/read-file.dto';
 import { Authorized } from '../../auth/decorators/authorized.decorator';
 import { UserRequest } from '../../common/interfaces/user-req.interface';
@@ -19,5 +19,21 @@ export class FileController {
     const fileUrl = await this.fileService.createUrl(fileDocument, user);
 
     return ReadFileDto.createFromDoc(fileDocument, fileUrl);
+  }
+
+  @Get('/')
+  @Authorized()
+  @UseInterceptors(FileInterceptor('file'))
+  async getAllUserFiles(@Req() req: UserRequest): Promise<ReadFileDto[]> {
+    const { user } = req;
+
+    const fileDocuments = await this.fileService.findFilesByUserId(user.id);
+
+    return await Promise.all(
+      fileDocuments.map(async (fileDoc) => {
+        const fileUrl = await this.fileService.createUrl(fileDoc, user);
+        return ReadFileDto.createFromDoc(fileDoc, fileUrl);
+      }),
+    );
   }
 }

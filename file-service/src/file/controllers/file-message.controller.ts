@@ -10,12 +10,6 @@ export class FileMessageController {
     private readonly fileService: FileService,
   ) {}
 
-  @MessagePattern('get-user-file')
-  async addSubscriber(@Payload() data: string, @Ctx() context: RmqContext) {
-    console.log('I GET A MESSAGE');
-    return 'USER FILE URL';
-  }
-
   @MessagePattern('file-processed')
   async deleteFile(@Payload() key: string, @Ctx() context: RmqContext) {
     const channel = context.getChannelRef();

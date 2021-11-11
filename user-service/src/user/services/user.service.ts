@@ -18,13 +18,6 @@ export class UserService {
     await this.client.connect();
   }
 
-  public async getUserImage() {
-    console.log('Sending message');
-    const message = ':userId:';
-    const temp = await this.client.send('get-user-file', message).toPromise();
-    console.log(temp);
-  }
-
   public async saveUser(user: User): Promise<User> {
     return this.userRepository.save(user);
   }

@@ -69,6 +69,10 @@ export class FileService {
     return fileDoc.save();
   }
 
+  public async findFilesByUserId(userId: string): Promise<FileDocument[]> {
+    return this.fileModel.find({ userId }).exec();
+  }
+
   private async writeToDisc(ws, buffer: Buffer): Promise<void> {
     return new Promise((resolve) => {
       ws.write(buffer, resolve);
