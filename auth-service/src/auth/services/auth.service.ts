@@ -26,7 +26,7 @@ export class AuthService {
     try {
       await lastValueFrom(this.client.send('create-user', new User(email, hashPassword)));
     } catch (e) {
-      throw new BadRequestException(e.message);
+      throw new BadRequestException(e);
     }
   }
 
