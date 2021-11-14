@@ -93,7 +93,5 @@ services:
     volumes:
       - ./file-processor:/usr/file-processor
       - ./files:/usr/files
-    ports:
-      - "4003:4003"
     depends_on:
       - rabbitmq-server

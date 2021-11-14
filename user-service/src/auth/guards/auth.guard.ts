@@ -15,7 +15,7 @@ export class AuthGuard implements CanActivate {
     const token = req.headers.authorization?.substring(7, req.headers.authorization?.length) || null;
 
     if (!token) {
-      throw new UnauthorizedException('Authorization bearer token is required is headers');
+      throw new UnauthorizedException('Authorization bearer token in required is headers');
     }
 
     try {

@@ -10,10 +10,10 @@ def process_file(key: str):
     print(f"Process file with key {key}")
 
     # PROCESS AND SAVE FILE
-    image = Image.open(f"../files/unprocessed/{key}")
+    image = Image.open(f"{os.environ['UNPROCESSED_FILE_PATH']}/{key}")
     half = 0.5
     image.thumbnail([int(half * s) for s in image.size])
-    image.save(f"../files/for-share/{key}")
+    image.save(f"{os.environ['PROCESSED_FILE_PATH']}/{key}")
 
     # SEND MSG
     producer = QueueConnection(
@@ -24,7 +24,7 @@ def process_file(key: str):
 
 def delete_file(key: str):
     print(f"Remove file with key {key}")
-    os.remove(f"../files/unprocessed/{key}")
+    os.remove(f"{os.environ['UNPROCESSED_FILE_PATH']}/{key}")
 
 
 def callback():
