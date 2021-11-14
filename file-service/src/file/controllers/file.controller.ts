@@ -4,7 +4,8 @@ import { Authorized } from '../../auth/decorators/authorized.decorator';
 import { UserRequest } from '../../common/interfaces/user-req.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from '../services/file.service';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { FileValidationPipe } from '../pipes/file-validation.pipe';
 
 @Controller('/files')
 @ApiTags('files')
@@ -27,7 +28,11 @@ export class FileController {
     },
   })
   @UseInterceptors(FileInterceptor('file'))
-  async uploadUserFile(@Req() req: UserRequest, @UploadedFile('file') file: Express.Multer.File): Promise<ReadFileDto> {
+  @ApiCreatedResponse({ type: ReadFileDto })
+  async uploadUserFile(
+    @Req() req: UserRequest,
+    @UploadedFile('file', FileValidationPipe) file: Express.Multer.File,
+  ): Promise<ReadFileDto> {
     const { user } = req;
 
     const fileDocument = await this.fileService.saveFile(user, file);
@@ -38,6 +43,7 @@ export class FileController {
 
   @Get('/')
   @Authorized()
+  @ApiOkResponse({ type: [ReadFileDto] })
   async getAllUserFiles(@Req() req: UserRequest): Promise<ReadFileDto[]> {
     const { user } = req;
 

@@ -29,4 +29,8 @@ export class UserService {
   async findUserByEmail(email: string): Promise<User | undefined> {
     return this.userRepository.findOne({ where: { email } });
   }
+
+  async getUserById(id: string): Promise<User> {
+    return this.userRepository.findOne({ where: { id } });
+  }
 }
