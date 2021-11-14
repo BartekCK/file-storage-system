@@ -8,14 +8,14 @@ Rejected
 
 ## Context
 
-All services will expose authorised endpoints. App need to single place for simple 
-authorization 
+All services expose authorised endpoints. App need single place for simple 
+authorization.
 
 ## Decision
 
 Additional creation client per service is overcomplicated for this kind of small app.
-Our auth service won't grow and the main task is to authorise services clients but all services
-are in the same root network. 
+Auth service won't grow and the main task is to authorise services clients. All services
+are in the same root network.
 
 ## Consequences
 

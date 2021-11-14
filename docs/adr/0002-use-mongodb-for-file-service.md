@@ -14,9 +14,9 @@ Accepted
 
 We don't have specified all required data for store but basically this data will be grow
 horizontal so also will be used horizontal scaling, that's why
-MongoDB was implemented as database for file service
+MongoDB was implemented as database for file service.
 
 ## Consequences
 
-For Node.js one of the most popular clients is mongoose. Mongoose has problem with transactions
+For Node.js one of the most popular clients is mongoose. Mongoose has problem with dynamic migrations
 but in simple way allow to implement repositories and keep OOP programing.
