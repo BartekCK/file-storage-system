@@ -21,6 +21,7 @@
 
 ## 1. How it works
 ![System overview](./docs/system.png)
+
 Ok I know you look on diagram above a think _"what the ..."_. That was my creativity
 but let me start from the beginning ...
 
